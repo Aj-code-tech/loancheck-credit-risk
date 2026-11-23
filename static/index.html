@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LoanCheck | Credit Risk Underwriting Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-group">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" />
+            <path d="M9 12l2 2 4-4" />
+          </svg>
+        </div>
+        <span class="brand-title">LoanCheck</span>
+        <span class="brand-divider">|</span>
+        <span class="brand-subtitle">Credit Risk Underwriting Console</span>
+      </div>
+
+      <div class="status-cluster">
+        <div class="preset-group">
+          <button type="button" class="preset-btn" data-preset="prime">Prime Case</button>
+          <button type="button" class="preset-btn" data-preset="borderline">Borderline</button>
+          <button type="button" class="preset-btn" data-preset="highrisk">High Risk</button>
+        </div>
+        <div id="apiStatus" class="api-pill checking">
+          <span class="status-dot"></span>
+          <span id="apiStatusText">Connecting...</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <form id="riskForm" class="underwriting-form">
+      <section class="panel">
+        <div class="panel-header">
+          <span class="panel-code">01</span>
+          <h2>APPLICANT PROFILE</h2>
+        </div>
+        <div class="grid-4">
+          <div class="field">
+            <label for="person_age">Age</label>
+            <div class="input-box">
+              <input type="number" id="person_age" name="person_age" value="29" min="18" max="100" required />
+              <span class="unit">yrs</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="person_emp_length">Work Experience</label>
+            <div class="input-box">
+              <input type="number" id="person_emp_length" name="person_emp_length" value="4.5" step="0.5" min="0" max="60" required />
+              <span class="unit">yrs</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="person_income">Annual Income</label>
+            <div class="input-box prefix-box">
+              <span class="prefix">₹</span>
+              <input type="number" id="person_income" name="person_income" value="720000" min="1000" step="1000" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="person_home_ownership">Home Ownership</label>
+            <select id="person_home_ownership" name="person_home_ownership" required>
+              <option value="RENT" selected>Renting</option>
+              <option value="MORTGAGE">Mortgage</option>
+              <option value="OWN">Owned Outright</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <span class="panel-code">02</span>
+          <h2>LOAN STRUCTURE</h2>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="loan_intent">Loan Purpose</label>
+            <select id="loan_intent" name="loan_intent" required>
+              <option value="PERSONAL" selected>Personal</option>
+              <option value="EDUCATION">Education</option>
+              <option value="MEDICAL">Medical</option>
+              <option value="VENTURE">Business / Venture</option>
+              <option value="HOMEIMPROVEMENT">Home Improvement</option>
+              <option value="DEBTCONSOLIDATION">Debt Consolidation</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="loan_grade">Loan Grade</label>
+            <select id="loan_grade" name="loan_grade" required>
+              <option value="A" selected>Grade A (Prime)</option>
+              <option value="B">Grade B</option>
+              <option value="C">Grade C</option>
+              <option value="D">Grade D</option>
+              <option value="E">Grade E</option>
+              <option value="F">Grade F</option>
+              <option value="G">Grade G (Subprime)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-3 mt-14">
+          <div class="field">
+            <label for="loan_amnt">Loan Amount</label>
+            <div class="input-box prefix-box">
+              <span class="prefix">₹</span>
+              <input type="number" id="loan_amnt" name="loan_amnt" value="120000" min="500" step="500" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="loan_int_rate">Interest Rate</label>
+            <div class="input-box">
+              <input type="number" id="loan_int_rate" name="loan_int_rate" value="10.75" min="1" max="40" step="0.05" required />
+              <span class="unit">%</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="loan_percent_income">Loan-to-Income Ratio</label>
+            <div class="input-box">
+              <input type="number" id="loan_percent_income" name="loan_percent_income" value="0.17" min="0" max="1" step="0.01" required />
+              <span class="unit">ratio</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <span class="panel-code">03</span>
+          <h2>CREDIT BUREAU HISTORY</h2>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="cb_person_default_on_file">Prior Default on File</label>
+            <select id="cb_person_default_on_file" name="cb_person_default_on_file" required>
+              <option value="N" selected>No Prior Default</option>
+              <option value="Y">Yes — Historical Default</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="cb_person_cred_hist_length">Credit History Length</label>
+            <div class="input-box">
+              <input type="number" id="cb_person_cred_hist_length" name="cb_person_cred_hist_length" value="5" min="0" max="60" required />
+              <span class="unit">yrs</span>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="submit-btn">
+          Analyze Credit Risk
+        </button>
+        <div id="errorBanner" class="error-banner" hidden></div>
+      </section>
+    </form>
+
+    <aside class="results-column">
+      <section class="panel">
+        <div class="panel-header">
+          <span class="panel-code">04</span>
+          <h2>RISK ASSESSMENT METRICS</h2>
+        </div>
+
+        <div class="hero-metric">
+          <div>
+            <div class="metric-caption">DEFAULT PROBABILITY</div>
+            <div id="probValue" class="prob-readout">--.-%</div>
+          </div>
+          <span id="riskBadge" class="risk-badge neutral">AWAITING RUN</span>
+        </div>
+
+        <div class="meter-block">
+          <div class="meter-labels">
+            <span>0% LOW</span>
+            <span id="thresholdLabel">DECISION CUTOFF: 38.0%</span>
+            <span>100% HIGH</span>
+          </div>
+          <div class="meter-track">
+            <div id="meterFill" class="meter-fill" style="width: 0%"></div>
+            <div id="thresholdMarker" class="threshold-marker" style="left: 38%"></div>
+          </div>
+        </div>
+
+        <div class="telemetry-table">
+          <div class="telemetry-row">
+            <span class="t-key">Estimated Default Risk</span>
+            <span id="tProb" class="t-val">—</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="t-key">Policy Cutoff Threshold</span>
+            <span id="tThreshold" class="t-val">38.0%</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="t-key">Risk Band Classification</span>
+            <span id="tTier" class="t-val">—</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="t-key">Underwriting Decision</span>
+            <span id="tDecision" class="t-val">—</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <span class="panel-code">05</span>
+          <h2>SHAP FEATURE ATTRIBUTION</h2>
+        </div>
+        <p class="panel-note">Top applicant factors pushing default risk higher (+) or lower (−).</p>
+        <div id="shapContainer" class="shap-list">
+          <div class="shap-empty">Run an assessment to inspect per-applicant SHAP feature drivers.</div>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    <span>LoanCheck Underwriting Engine • Built by Ashish Sharma</span>
+    <span>XGBoost Calibrated Classifier + SHAP Explainability</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
